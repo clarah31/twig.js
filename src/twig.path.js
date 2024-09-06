@@ -72,20 +72,20 @@ module.exports = function (Twig) {
             }
         } else if (template.path) {
             // Get the system-specific path separator
-            const path = require('path');
-            const sep = path.sep || sepChr;
-            const relative = new RegExp('^\\.{1,2}' + sep.replace('\\', '\\\\'));
-            file = file.replace(/\//g, sep);
+            // const path = require('path');
+            // const sep = path.sep || sepChr;
+            // const relative = new RegExp('^\\.{1,2}' + sep.replace('\\', '\\\\'));
+            // file = file.replace(/\//g, sep);
 
-            if (template.base !== undefined && file.match(relative) === null) {
-                file = file.replace(template.base, '');
-                base = template.base + sep;
-            } else {
-                base = path.normalize(template.path);
-            }
+            // if (template.base !== undefined && file.match(relative) === null) {
+            //     file = file.replace(template.base, '');
+            //     base = template.base + sep;
+            // } else {
+            //     base = path.normalize(template.path);
+            // }
 
-            base = base.replace(sep + sep, sep);
-            sepChr = sep;
+            // base = base.replace(sep + sep, sep);
+            // sepChr = sep;
         } else if ((template.name || template.id) && template.method && template.method !== 'fs' && template.method !== 'ajax') {
             // Custom registered loader
             base = template.base || template.name || template.id;

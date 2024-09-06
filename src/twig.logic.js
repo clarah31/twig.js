@@ -12,6 +12,7 @@ module.exports = function (Twig) {
     /**
      * Logic token types.
      */
+    // AUIT command
     Twig.logic.type = {
         if_: 'Twig.logic.type.if',
         endif: 'Twig.logic.type.endif',
@@ -27,23 +28,23 @@ module.exports = function (Twig) {
         apply: 'Twig.logic.type.apply',
         endapply: 'Twig.logic.type.endapply',
         do: 'Twig.logic.type.do',
-        shortblock: 'Twig.logic.type.shortblock',
-        block: 'Twig.logic.type.block',
-        endblock: 'Twig.logic.type.endblock',
-        extends_: 'Twig.logic.type.extends',
-        use: 'Twig.logic.type.use',
-        include: 'Twig.logic.type.include',
+//        shortblock: 'Twig.logic.type.shortblock',
+//        block: 'Twig.logic.type.block',
+//        endblock: 'Twig.logic.type.endblock',
+//        extends_: 'Twig.logic.type.extends',
+//        use: 'Twig.logic.type.use',
+//        include: 'Twig.logic.type.include',
         spaceless: 'Twig.logic.type.spaceless',
         endspaceless: 'Twig.logic.type.endspaceless',
-        macro: 'Twig.logic.type.macro',
-        endmacro: 'Twig.logic.type.endmacro',
-        import_: 'Twig.logic.type.import',
-        from: 'Twig.logic.type.from',
-        embed: 'Twig.logic.type.embed',
-        endembed: 'Twig.logic.type.endembed',
+//        macro: 'Twig.logic.type.macro',
+//        endmacro: 'Twig.logic.type.endmacro',
+//        import_: 'Twig.logic.type.import',
+//        from: 'Twig.logic.type.from',
+//        embed: 'Twig.logic.type.embed',
+//        endembed: 'Twig.logic.type.endembed',
         with: 'Twig.logic.type.with',
         endwith: 'Twig.logic.type.endwith',
-        deprecated: 'Twig.logic.type.deprecated'
+//        deprecated: 'Twig.logic.type.deprecated'
     };
 
     // Regular expressions for handling logic tokens.
@@ -1414,13 +1415,15 @@ module.exports = function (Twig) {
      * @param {Object} definition The new logic expression.
      */
     Twig.logic.extend = function (definition) {
+        // AUIT 
         if (definition.type) {
             Twig.logic.extendType(definition.type);
+            Twig.logic.handler[definition.type] = definition;
         } else {
-            throw new Twig.Error('Unable to extend logic definition. No type provided for ' + definition);
+            //throw new Twig.Error('Unable to extend logic definition. No type provided for ' + definition);
         }
 
-        Twig.logic.handler[definition.type] = definition;
+        //Twig.logic.handler[definition.type] = definition;
     };
 
     // Extend with built-in expressions

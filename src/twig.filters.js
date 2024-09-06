@@ -7,7 +7,7 @@ module.exports = function (Twig) {
         const clas = Object.prototype.toString.call(obj).slice(8, -1);
         return obj !== undefined && obj !== null && clas === type;
     }
-
+// AUIT
     Twig.filters = {
         // String Filters
         upper(value) {
@@ -534,11 +534,35 @@ module.exports = function (Twig) {
 
             return new Twig.Markup(value);
         },
-
         /**
          * Adapted from: http://phpjs.org/functions/number_format:481
          */
-        /* eslint-disable-next-line camelcase */
+
+/**
+ * 
+ * AUIT
+format_currency
+format_date
+format_datetime
+format_number
+format_time
+ */        
+        // Org si format_number
+        format_currency(value, params) {
+            return 'not implemented'
+        },
+        format_date(value, params) {
+            return 'not implemented'
+        },
+        format_datetime(value, params) {
+            return 'not implemented'
+        },
+        format_time(value, params) {
+            return 'not implemented'
+        },
+        format_number(value, params) {
+            return Twig.filters.number_format(value,params)
+        },
         number_format(value, params) {
             let number = value;
             const decimals = (params && params[0]) ? params[0] : undefined;

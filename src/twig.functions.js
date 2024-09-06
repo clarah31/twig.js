@@ -7,12 +7,23 @@ module.exports = function (Twig) {
      * @type {string}
      */
     const TEMPLATE_NOT_FOUND_MESSAGE = 'Template "{name}" is not defined.';
-
+    //AUIT
     Twig.functions = {
         //  Attribute, block, constant, date, dump, parent, random,.
 
         // Range function from http://phpjs.org/functions/range:499
         // Used under an MIT License
+        FigmaSetVisible(boolean) {
+            const cmd = "currentNode.visible=" + (boolean ? "true" : "false");
+            if (!Twig.figmaCmds) Twig.figmaCmds = [];
+            Twig.figmaCmds.push(cmd);
+            console.log("Twig",Twig)
+        },
+        FigmaSource(code) {
+            //visible: boolean
+            if (!Twig.figmaCmds) Twig.figmaCmds = [];
+            Twig.figmaCmds.push(code);
+        },
         range(low, high, step) {
             // http://kevin.vanzonneveld.net
             // +   original by: Waldo Malqui Silva
@@ -38,19 +49,19 @@ module.exports = function (Twig) {
                 inival = low.charCodeAt(0);
                 endval = high.charCodeAt(0);
             } else {
-                inival = (isNaN(low) ? 0 : low);
-                endval = (isNaN(high) ? 0 : high);
+                inival = isNaN(low) ? 0 : low;
+                endval = isNaN(high) ? 0 : high;
             }
 
-            const plus = (!((inival > endval)));
+            const plus = !(inival > endval);
             if (plus) {
                 while (inival <= endval) {
-                    matrix.push(((chars) ? String.fromCharCode(inival) : inival));
+                    matrix.push(chars ? String.fromCharCode(inival) : inival);
                     inival += walker;
                 }
             } else {
                 while (inival >= endval) {
-                    matrix.push(((chars) ? String.fromCharCode(inival) : inival));
+                    matrix.push(chars ? String.fromCharCode(inival) : inival);
                     inival -= walker;
                 }
             }
@@ -67,12 +78,12 @@ module.exports = function (Twig) {
             const argsCopy = [...args];
             const state = this;
 
-            const EOL = '\n';
-            const indentChar = '  ';
+            const EOL = "\n";
+            const indentChar = "  ";
             let indentTimes = 0;
-            let out = '';
+            let out = "";
             const indent = function (times) {
-                let ind = '';
+                let ind = "";
                 while (times > 0) {
                     times--;
                     ind += indentChar;
@@ -83,48 +94,58 @@ module.exports = function (Twig) {
 
             const displayVar = function (variable) {
                 out += indent(indentTimes);
-                if (typeof (variable) === 'object') {
+                if (typeof variable === "object") {
                     dumpVar(variable);
-                } else if (typeof (variable) === 'function') {
-                    out += 'function()' + EOL;
-                } else if (typeof (variable) === 'string') {
-                    out += 'string(' + variable.length + ') "' + variable + '"' + EOL;
-                } else if (typeof (variable) === 'number') {
-                    out += 'number(' + variable + ')' + EOL;
-                } else if (typeof (variable) === 'boolean') {
-                    out += 'bool(' + variable + ')' + EOL;
+                } else if (typeof variable === "function") {
+                    out += "function()" + EOL;
+                } else if (typeof variable === "string") {
+                    out +=
+                        "string(" +
+                        variable.length +
+                        ') "' +
+                        variable +
+                        '"' +
+                        EOL;
+                } else if (typeof variable === "number") {
+                    out += "number(" + variable + ")" + EOL;
+                } else if (typeof variable === "boolean") {
+                    out += "bool(" + variable + ")" + EOL;
                 }
             };
 
             const dumpVar = function (variable) {
                 let i;
                 if (variable === null) {
-                    out += 'NULL' + EOL;
+                    out += "NULL" + EOL;
                 } else if (variable === undefined) {
-                    out += 'undefined' + EOL;
-                } else if (typeof variable === 'object') {
-                    out += indent(indentTimes) + typeof (variable);
+                    out += "undefined" + EOL;
+                } else if (typeof variable === "object") {
+                    out += indent(indentTimes) + typeof variable;
                     indentTimes++;
-                    out += '(' + (function (obj) {
-                        let size = 0;
-                        let key;
-                        for (key in obj) {
-                            if (Object.hasOwnProperty.call(obj, key)) {
-                                size++;
+                    out +=
+                        "(" +
+                        (function (obj) {
+                            let size = 0;
+                            let key;
+                            for (key in obj) {
+                                if (Object.hasOwnProperty.call(obj, key)) {
+                                    size++;
+                                }
                             }
-                        }
 
-                        return size;
-                    })(variable) + ') {' + EOL;
+                            return size;
+                        })(variable) +
+                        ") {" +
+                        EOL;
                     for (i in variable) {
                         if (Object.hasOwnProperty.call(variable, i)) {
-                            out += indent(indentTimes) + '[' + i + ']=> ' + EOL;
+                            out += indent(indentTimes) + "[" + i + "]=> " + EOL;
                             displayVar(variable[i]);
                         }
                     }
 
                     indentTimes--;
-                    out += indent(indentTimes) + '}' + EOL;
+                    out += indent(indentTimes) + "}" + EOL;
                 } else {
                     displayVar(variable);
                 }
@@ -135,7 +156,7 @@ module.exports = function (Twig) {
                 argsCopy.push(state.context);
             }
 
-            argsCopy.forEach(variable => {
+            argsCopy.forEach((variable) => {
                 dumpVar(variable);
             });
 
@@ -143,43 +164,44 @@ module.exports = function (Twig) {
         },
         date(date) {
             let dateObj;
-            if (date === undefined || date === null || date === '') {
+            if (date === undefined || date === null || date === "") {
                 dateObj = new Date();
-            } else if (Twig.lib.is('Date', date)) {
+            } else if (Twig.lib.is("Date", date)) {
                 dateObj = date;
-            } else if (Twig.lib.is('String', date)) {
+            } else if (Twig.lib.is("String", date)) {
                 if (date.match(/^\d+$/)) {
                     dateObj = new Date(date * 1000);
                 } else {
                     dateObj = new Date(Twig.lib.strtotime(date) * 1000);
                 }
-            } else if (Twig.lib.is('Number', date)) {
+            } else if (Twig.lib.is("Number", date)) {
                 // Timestamp
                 dateObj = new Date(date * 1000);
             } else {
-                throw new Twig.Error('Unable to parse date ' + date);
+                throw new Twig.Error("Unable to parse date " + date);
             }
 
             return dateObj;
         },
-        block(blockName) {
-            const state = this;
+        // AUIT
+        // block(blockName) {
+        //     const state = this;
 
-            const block = state.getBlock(blockName);
+        //     const block = state.getBlock(blockName);
 
-            if (block !== undefined) {
-                return block.render(state, state.context);
-            }
-        },
-        parent() {
-            const state = this;
+        //     if (block !== undefined) {
+        //         return block.render(state, state.context);
+        //     }
+        // },
+        // parent() {
+        //     const state = this;
 
-            return state.getBlock(state.getNestingStackToken(Twig.logic.type.block).blockName, true).render(state, state.context);
-        },
+        //     return state.getBlock(state.getNestingStackToken(Twig.logic.type.block).blockName, true).render(state, state.context);
+        // },
         attribute(object, method, params) {
-            if (Twig.lib.is('Object', object)) {
+            if (Twig.lib.is("Object", object)) {
                 if (Object.hasOwnProperty.call(object, method)) {
-                    if (typeof object[method] === 'function') {
+                    if (typeof object[method] === "function") {
                         return object[method].apply(undefined, params);
                     }
 
@@ -188,10 +210,10 @@ module.exports = function (Twig) {
             }
 
             // Array will return element 0-index
-            return object ? (object[method] || undefined) : undefined;
+            return object ? object[method] || undefined : undefined;
         },
         max(values, ...args) {
-            if (Twig.lib.is('Object', values)) {
+            if (Twig.lib.is("Object", values)) {
                 delete values._keys;
                 return Twig.lib.max(values);
             }
@@ -199,7 +221,7 @@ module.exports = function (Twig) {
             return Reflect.apply(Twig.lib.max, null, [values, ...args]);
         },
         min(values, ...args) {
-            if (Twig.lib.is('Object', values)) {
+            if (Twig.lib.is("Object", values)) {
                 delete values._keys;
                 return Twig.lib.min(values);
             }
@@ -207,18 +229,19 @@ module.exports = function (Twig) {
             return Reflect.apply(Twig.lib.min, null, [values, ...args]);
         },
         /* eslint-disable-next-line camelcase */
-        template_from_string(template) {
-            const state = this;
+        // AUIT
+        // template_from_string(template) {
+        //     const state = this;
 
-            if (template === undefined) {
-                template = '';
-            }
+        //     if (template === undefined) {
+        //         template = '';
+        //     }
 
-            return Twig.Templates.parsers.twig({
-                options: state.template.options,
-                data: template
-            });
-        },
+        //     return Twig.Templates.parsers.twig({
+        //         options: state.template.options,
+        //         data: template
+        //     });
+        // },
         random(value) {
             const LIMIT_INT31 = 0x80000000;
 
@@ -226,22 +249,24 @@ module.exports = function (Twig) {
                 const random = Math.floor(Math.random() * LIMIT_INT31);
                 const min = Math.min.call(null, 0, n);
                 const max = Math.max.call(null, 0, n);
-                return min + Math.floor((max - min + 1) * random / LIMIT_INT31);
+                return (
+                    min + Math.floor(((max - min + 1) * random) / LIMIT_INT31)
+                );
             }
 
-            if (Twig.lib.is('Number', value)) {
+            if (Twig.lib.is("Number", value)) {
                 return getRandomNumber(value);
             }
 
-            if (Twig.lib.is('String', value)) {
+            if (Twig.lib.is("String", value)) {
                 return value.charAt(getRandomNumber(value.length - 1));
             }
 
-            if (Twig.lib.is('Array', value)) {
+            if (Twig.lib.is("Array", value)) {
                 return value[getRandomNumber(value.length - 1)];
             }
 
-            if (Twig.lib.is('Object', value)) {
+            if (Twig.lib.is("Object", value)) {
                 const keys = Object.keys(value);
                 return value[keys[getRandomNumber(keys.length - 1)]];
             }
@@ -255,75 +280,76 @@ module.exports = function (Twig) {
          * @param {boolean} [ignoreMissing=false]
          * @returns {string}
          */
-        source(name, ignoreMissing) {
-            const state = this;
-            const {namespaces} = state.template.options;
-            let templateSource;
-            let templateFound = false;
-            const isNodeEnvironment = typeof module !== 'undefined' && typeof module.exports !== 'undefined' && typeof window === 'undefined';
-            let loader;
-            let path = name;
+        // AUIT
+        // source(name, ignoreMissing) {
+        //     const state = this;
+        //     const {namespaces} = state.template.options;
+        //     let templateSource;
+        //     let templateFound = false;
+        //     const isNodeEnvironment = typeof module !== 'undefined' && typeof module.exports !== 'undefined' && typeof window === 'undefined';
+        //     let loader;
+        //     let path = name;
 
-            if (namespaces && typeof namespaces === 'object') {
-                path = Twig.path.expandNamespace(namespaces, path);
-            }
+        //     if (namespaces && typeof namespaces === 'object') {
+        //         path = Twig.path.expandNamespace(namespaces, path);
+        //     }
 
-            // If we are running in a node.js environment, set the loader to 'fs'.
-            if (isNodeEnvironment) {
-                loader = 'fs';
-            } else {
-                loader = 'ajax';
-            }
+        //     // If we are running in a node.js environment, set the loader to 'fs'.
+        //     if (isNodeEnvironment) {
+        //         loader = 'fs';
+        //     } else {
+        //         loader = 'ajax';
+        //     }
 
-            // Build the params object
-            const params = {
-                id: name,
-                path,
-                method: loader,
-                parser: 'source',
-                async: false,
-                fetchTemplateSource: true
-            };
+        //     // Build the params object
+        //     const params = {
+        //         id: name,
+        //         path,
+        //         method: loader,
+        //         parser: 'source',
+        //         async: false,
+        //         fetchTemplateSource: true
+        //     };
 
-            // Default ignoreMissing to false
-            if (typeof ignoreMissing === 'undefined') {
-                ignoreMissing = false;
-            }
+        //     // Default ignoreMissing to false
+        //     if (typeof ignoreMissing === 'undefined') {
+        //         ignoreMissing = false;
+        //     }
 
-            // Try to load the remote template
-            //
-            // on exception, log it
-            try {
-                templateSource = Twig.Templates.loadRemote(name, params);
+        //     // Try to load the remote template
+        //     //
+        //     // on exception, log it
+        //     try {
+        //         templateSource = Twig.Templates.loadRemote(name, params);
 
-                // If the template is undefined or null, set the template to an empty string and do NOT flip the
-                // boolean indicating we found the template
-                //
-                // else, all is good! flip the boolean indicating we found the template
-                if (typeof templateSource === 'undefined' || templateSource === null) {
-                    templateSource = '';
-                } else {
-                    templateFound = true;
-                }
-            } catch (error) {
-                Twig.log.debug('Twig.functions.source: ', 'Problem loading template  ', error);
-            }
+        //         // If the template is undefined or null, set the template to an empty string and do NOT flip the
+        //         // boolean indicating we found the template
+        //         //
+        //         // else, all is good! flip the boolean indicating we found the template
+        //         if (typeof templateSource === 'undefined' || templateSource === null) {
+        //             templateSource = '';
+        //         } else {
+        //             templateFound = true;
+        //         }
+        //     } catch (error) {
+        //         Twig.log.debug('Twig.functions.source: ', 'Problem loading template  ', error);
+        //     }
 
-            // If the template was NOT found AND we are not ignoring missing templates, return the same message
-            // that is returned by the PHP implementation of the twig source() function
-            //
-            // else, return the template source
-            if (!templateFound && !ignoreMissing) {
-                return TEMPLATE_NOT_FOUND_MESSAGE.replace('{name}', name);
-            }
+        //     // If the template was NOT found AND we are not ignoring missing templates, return the same message
+        //     // that is returned by the PHP implementation of the twig source() function
+        //     //
+        //     // else, return the template source
+        //     if (!templateFound && !ignoreMissing) {
+        //         return TEMPLATE_NOT_FOUND_MESSAGE.replace('{name}', name);
+        //     }
 
-            return templateSource;
-        }
+        //     return templateSource;
+        // }
     };
 
     Twig._function = function (_function, value, params) {
         if (!Twig.functions[_function]) {
-            throw new Twig.Error('Unable to find function ' + _function);
+            throw new Twig.Error("Unable to find function " + _function);
         }
 
         return Twig.functions[_function](value, params);
