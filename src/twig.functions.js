@@ -22,28 +22,33 @@ module.exports = function (Twig) {
 		},
 		FigmaSource(code) {
 			//visible: boolean
-			this.template.figmaCmds.push({
-				type: 'f-sc',
-				cmd: code
-			});
-		},
-        QrCode(code, ecl = 'M', fill = '#182026', size = 300, cornerBlocksAsCircles = true, roundCorners = true) {
-            
+			if (code && typeof code === 'string')
 				this.template.figmaCmds.push({
-					type: 'qrcode',
-					data: {
-						content: code?code:'',
-						ecl: ecl, // 'L' | 'M' | 'Q' | 'H'
-						fill: fill,
-						cornerBlocksAsCircles: cornerBlocksAsCircles,
-						size: size, // px
-						radiusFactor: 0.75, // 0-1
-						cornerBlockRadiusFactor: 2, // 0-3
-						roundOuterCorners: roundCorners,
-						roundInnerCorners: roundCorners,
-						preContent: ''
-					}
+					type: 'f-sc',
+					cmd: code
 				});
+		},
+		addFilterRecord(code) {
+			if (Number.isInteger(code)) {
+				this.template.recFilter.push(code);
+			} else throw new Twig.Error('add record index for filter use loop.index0');
+		},
+		QrCode(code, ecl = 'M', fill = '#182026', size = 300, cornerBlocksAsCircles = true, roundCorners = true) {
+			this.template.figmaCmds.push({
+				type: 'qrcode',
+				data: {
+					content: code ? code : '',
+					ecl: ecl, // 'L' | 'M' | 'Q' | 'H'
+					fill: fill,
+					cornerBlocksAsCircles: cornerBlocksAsCircles,
+					size: size, // px
+					radiusFactor: 0.75, // 0-1
+					cornerBlockRadiusFactor: 2, // 0-3
+					roundOuterCorners: roundCorners,
+					roundInnerCorners: roundCorners,
+					preContent: ''
+				}
+			});
 		},
 		range(low, high, step) {
 			// http://kevin.vanzonneveld.net

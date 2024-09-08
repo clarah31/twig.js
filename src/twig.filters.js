@@ -10,6 +10,7 @@ module.exports = function (Twig) {
 // AUIT
     Twig.filters = {
         // String Filters
+       
         upper(value) {
             if (typeof value !== 'string') {
                 return value;
