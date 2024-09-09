@@ -15,7 +15,7 @@ module.exports = function (Twig) {
 		// Used under an MIT License
 		FigmaSetVisible(boolean) {
 			// const cmd = "currentNode.visible=" + (boolean ? "true" : "false");
-			this.template.figmaCmds.push({
+			this.template.mkitFigmaCmds.push({
 				type: 'f-v',
 				cmd: boolean
 			});
@@ -23,18 +23,26 @@ module.exports = function (Twig) {
 		FigmaSource(code) {
 			//visible: boolean
 			if (code && typeof code === 'string')
-				this.template.figmaCmds.push({
+				this.template.mkitFigmaCmds.push({
 					type: 'f-sc',
 					cmd: code
 				});
 		},
 		addFilterRecord(code) {
-			if (Number.isInteger(code)) {
-				this.template.recFilter.push(code);
-			} else throw new Twig.Error('add record index for filter use loop.index0');
+			console.log(code);
+			const path = this.template.mkitTopPath.replace('[]', '');
+			const toprecs = this.context[path];
+			if (toprecs && Array.isArray(toprecs)) {
+				const idx = toprecs.findIndex(e => e === code);
+				if (idx >= 0) {
+					this.template.mkitRecFilter.push(0);
+					return;
+				}
+			}
+			throw new Twig.Error("can't find record in scope");
 		},
 		QrCode(code, ecl = 'M', fill = '#182026', size = 300, cornerBlocksAsCircles = true, roundCorners = true) {
-			this.template.figmaCmds.push({
+			this.template.mkitFigmaCmds.push({
 				type: 'qrcode',
 				data: {
 					content: code ? code : '',
