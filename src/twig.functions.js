@@ -29,13 +29,12 @@ module.exports = function (Twig) {
 				});
 		},
 		addFilterRecord(code) {
-			console.log(code);
 			const path = this.template.mkitTopPath.replace('[]', '');
 			const toprecs = this.context[path];
 			if (toprecs && Array.isArray(toprecs)) {
-				const idx = toprecs.findIndex(e => e === code);
+				const idx = toprecs.findIndex(e => Object.is(e,code));
 				if (idx >= 0) {
-					this.template.mkitRecFilter.push(0);
+					this.template.mkitRecFilter.push(idx);
 					return;
 				}
 			}
