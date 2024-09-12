@@ -13,14 +13,14 @@ module.exports = function (Twig) {
 
         // Range function from http://phpjs.org/functions/range:499
         // Used under an MIT License
-        FigmaSetVisible(boolean) {
+        MkitSetVisible(boolean) {
             // const cmd = "currentNode.visible=" + (boolean ? "true" : "false");
             this.template.mkitFigmaCmds.push({
                 type: "f-v",
                 cmd: boolean,
             });
         },
-        FigmaSource(code) {
+        MkitAddSource(code) {
             //visible: boolean
             if (code && typeof code === "string")
                 this.template.mkitFigmaCmds.push({
@@ -28,17 +28,21 @@ module.exports = function (Twig) {
                     cmd: code,
                 });
         },
-        addFilterRecord(code) {
-            const path = this.template.mkitTopPath.replace("[]", "");
-            const toprecs = this.context[path];
-            if (toprecs && Array.isArray(toprecs)) {
-                const idx = toprecs.findIndex((e) => Object.is(e, code));
-                if (idx >= 0) {
-                    this.template.mkitRecFilter.push(idx);
-                    return;
-                }
-            }
-            throw new Twig.Error("can't find record in scope");
+        MkitSetResult(code) {
+            this.template.mkitSetResult = code;
+        },
+        MkitUseRecord(code) {
+            this.template.mkitUseRecord = code?true:false;
+            // const path = this.template.mkitTopPath.replace("[]", "");
+            // const toprecs = this.context[path];
+            // if (toprecs && Array.isArray(toprecs)) {
+            //     const idx = toprecs.findIndex((e) => Object.is(e, code));
+            //     if (idx >= 0) {
+            //         this.template.mkitRecFilter.push(idx);
+            //         return;
+            //     }
+            // }
+            // throw new Twig.Error("can't find record in scope");
         },
         QrCode(code, props) {
             if (!code) return;
@@ -60,7 +64,7 @@ module.exports = function (Twig) {
                 type: "qrcode",
                 data: {
                     content: code,
-					...props
+                    ...props,
                     // ecl: ecl, // 'L' | 'M' | 'Q' | 'H'
                     // fill: fill,
                     // cornerBlocksAsCircles: cornerBlocksAsCircles,
