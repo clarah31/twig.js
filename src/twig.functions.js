@@ -44,25 +44,25 @@ module.exports = function (Twig) {
             // }
             // throw new Twig.Error("can't find record in scope");
         },
-        QrCode(code, props) {
+        MkitQrCode(code, props) {
             if (!code) return;
             if (!props) props = {};
-            props = {
-                ...{
-                    fill: "#333",
-                    cornerBlocksAsCircles: true,
-                    size: 180, // px
-                    radiusFactor: 0.75, // 0-1
-                    cornerBlockRadiusFactor: 2, // 0-3
-                    roundOuterCorners: true,
-                    roundInnerCorners: true,
-                    //preContent: null,
-                },
-                ...props,
-            };
-            this.template.mkitFigmaCmds.push({
-                type: "qrcode",
-                data: {
+
+            try{
+                props = {
+                    ...{
+                        fill: "#333",
+                        cornerBlocksAsCircles: true,
+                        size: 180, // px
+                        radiusFactor: 0.75, // 0-1
+                        cornerBlockRadiusFactor: 2, // 0-3
+                        roundOuterCorners: true,
+                        roundInnerCorners: true,
+                        //preContent: null,
+                    },
+                    ...props,
+                };
+                const data =                 {
                     content: code,
                     ...props,
                     // ecl: ecl, // 'L' | 'M' | 'Q' | 'H'
@@ -74,8 +74,14 @@ module.exports = function (Twig) {
                     // roundOuterCorners: roundCorners,
                     // roundInnerCorners: roundCorners,
                     // preContent: "",
-                },
-            });
+                };
+                this.template.mkitFigmaCmds.push({
+                    type: "qrcode",
+                    data: data
+                });
+            }catch(e){
+
+            }
         },
         range(low, high, step) {
             // http://kevin.vanzonneveld.net
