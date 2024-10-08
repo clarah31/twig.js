@@ -13,14 +13,14 @@ module.exports = function (Twig) {
 
 		// Range function from http://phpjs.org/functions/range:499
 		// Used under an MIT License
-		MkitSetVisible(boolean) {
+		MKitSetVisible(boolean) {
 			// const cmd = "currentNode.visible=" + (boolean ? "true" : "false");
 			this.template.mkitFigmaCmds.push({
 				type: 'f-v',
 				data: boolean
 			});
 		},
-		MkitAddSource(code) {
+		MKitAddSource(code) {
 			//visible: boolean
 			if (code && typeof code === 'string')
 				this.template.mkitFigmaCmds.push({
@@ -28,10 +28,10 @@ module.exports = function (Twig) {
 					data: code
 				});
 		},
-		MkitSetResult(code) {
+		MKitSetResult(code) {
 			this.template.mkitSetResult = code;
 		},
-		MkitUseRecord(code) {
+		MKitUseRecord(code) {
 			this.template.mkitUseRecord = code ? true : false;
 			// const path = this.template.mkitTopPath.replace("[]", "");
 			// const toprecs = this.context[path];
@@ -44,7 +44,7 @@ module.exports = function (Twig) {
 			// }
 			// throw new Twig.Error("can't find record in scope");
 		},
-		MkitImage(code, props) {
+		MKitImage(code, props) {
 			if (!code) return;
 			if (!props) props = {};
 			delete props['_keys'];
@@ -68,7 +68,7 @@ module.exports = function (Twig) {
 			} catch (e) {}
 		},
 
-		MkitQrCode(code, props) {
+		MKitQrCode(code, props) {
 			if (!code) return;
 			if (!props) props = {};
 			delete props['_keys'];
