@@ -48,7 +48,6 @@ module.exports = function (Twig) {
 			if (!code) return;
 			if (!props) props = {};
 			delete props['_keys'];
-
 			try {
 				props = {
 					...{
